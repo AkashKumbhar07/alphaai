@@ -98,13 +98,14 @@ The system outputs:
 ## Full Tech Stack
 
 ### Frontend
-- **Framework:** Next.js + React
-- **UI:** Tailwind CSS · shadcn/ui · Framer Motion
-- **Charts:** TradingView Lightweight Charts · Recharts
-- **State Management:** Zustand or Redux Toolkit
+- **Framework:** Svelte + Vite (desktop via Wails, web via standard deploy)
+- **UI:** Tailwind CSS · Skeleton UI · Framer Motion
+- **Charts:** TradingView Lightweight Charts · Chart.js
+- **State Management:** Svelte stores (built-in reactive stores)
 
 ### Backend
 - **Primary Backend:** Go (high concurrency, WebSocket handling, low latency, real-time streaming, excellent for microservices)
+- **Desktop Runtime:** Wails (embeds Go backend + Svelte frontend into a single native binary — `.exe`/`.dmg`/`.AppImage`)
 - **AI Service:** Python (ML ecosystem, NLP libraries, AI frameworks)
 - **APIs:** REST APIs (user management, dashboard APIs) · gRPC (internal service communication)
 - **Real-Time Streaming:** WebSockets (live prices, alerts, streaming analytics)
@@ -181,19 +182,68 @@ Users ask: "Why is ETH dropping?" AI responds with technical reasons, news impac
 ## System Architecture
 
 ### Architecture Style
-Event-Driven Microservices Architecture
+Event-Driven Microservices Architecture with Desktop-First Distribution
+
+### Delivery Model
+**Wails Desktop App** — single native binary containing:
+- Go backend (market ingestion, indicators, alerts, whale tracking)
+- Svelte UI (dashboard, charts, analysis panels)
+- Embedded lightweight local DB (SQLite via Go) for offline-capable operation
+
+External services (run locally or hosted) provide AI/sentiment/news analysis.
 
 ### Core Services
 
-| Service | Language | Responsibilities |
-|---------|----------|------------------|
-| Market Ingestion Service | Go | Binance WebSocket ingestion, exchange API collection, tick normalization |
-| Indicator Engine | Go/Python | RSI, MACD, EMA, volatility metrics |
-| AI Analysis Service | Python | LLM analysis, sentiment analysis, AI trade explanations |
-| Whale Monitoring Service | - | Blockchain wallet activity, exchange movements |
-| Alert Service | - | Notification pipelines, event triggers |
-| Strategy Engine | - | Backtesting, simulation, signal evaluation |
-| API Gateway | - | Auth, rate limiting, API routing |
+| Service | Language | Runtime | Responsibilities |
+|---------|----------|---------|------------------|
+| Wails App (Desktop) | Go + Svelte | Native binary | UI rendering, Go↔JS bindings, local caching, embedded SQLite |
+| Market Ingestion Service | Go | Internal | Binance WebSocket ingestion, exchange API collection, tick normalization |
+| Indicator Engine | Go | Internal | RSI, MACD, EMA, volatility metrics |
+| AI Analysis Service | Python | External | LLM analysis, sentiment analysis, AI trade explanations |
+| Whale Monitoring Service | Go | Internal | Blockchain wallet activity, exchange movements |
+| Alert Service | Go | Internal | Notification pipelines, event triggers |
+| Strategy Engine | Go | Internal | Backtesting, simulation, signal evaluation |
+| API Gateway | Go | External | Auth, rate limiting, API routing |
+
+### Distribution Flow
+
+```
+Svelte UI (frontend/)  ←→  Go Bindings (app.go)  ←→  Go Services (internal/)
+                                                          │
+                                              ┌───────────┴───────────┐
+                                              ▼                       ▼
+                                        Python AI Service      External APIs
+                                        (NLP, LLM, Sentiment)  (Binance, blockchain)
+```
+
+---
+
+### Repository Structure
+
+```
+alphaai/
+├── main.go                       # Wails entry point
+├── app.go                        # Go ↔ Svelte bindings
+├── wails.json                    # Wails configuration
+├── frontend/                     # Svelte app (Vite + Tailwind)
+│   ├── package.json
+│   ├── svelte.config.js
+│   ├── vite.config.ts
+│   └── src/
+│       ├── App.svelte
+│       ├── lib/                  # Components, stores, types
+│       └── routes/
+├── internal/                     # Go packages
+│   ├── market/                   # Binance WebSocket ingestion
+│   ├── indicators/               # RSI, MACD, EMA, Bollinger
+│   ├── whale/                    # Whale wallet tracking
+│   ├── alerts/                   # Trigger engine
+│   └── types/                    # Shared data types
+├── services/
+│   └── ai-service/               # Python AI (FastAPI + LangChain)
+├── project.md
+└── .gitignore
+```
 
 ---
 
@@ -241,7 +291,7 @@ Predict short-term movement, trend continuation probability.
 ---
 
 ## Future Scope
-- Mobile app
+- Mobile app (React Native or Flutter)
 - AI voice analyst
 - AI autonomous trading
 - DeFi integrations
@@ -249,6 +299,7 @@ Predict short-term movement, trend continuation probability.
 - Multi-exchange support
 - AI hedge fund simulation
 - AI trading copilot
+- Cross-platform Wails distribution (Windows/macOS/Linux via single build command)
 
 ---
 
