@@ -67,6 +67,21 @@ build/windows/
 build/mac/
 build/linux/
 
+# Go binaries
+backend/api
+backend/cmd/api/api
+backend/cmd/market/market
+backend/cmd/alerts/alerts
+backend/cmd/strategy/strategy
+backend/cmd/worker/worker
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
 # Wails
 apps/desktop/build/
 
