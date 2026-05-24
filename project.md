@@ -320,3 +320,42 @@ This single project demonstrates:
 This is extremely strong for: SDE2 roles, backend engineering, AI engineering, fintech startups, cybersecurity companies, remote international roles.
 
 Especially companies like: Coinbase · Binance · Kraken · CrowdStrike · Cisco
+
+---
+
+## Repository Architecture
+
+This project follows the **Framework-Core-Service** pattern. For complete details, see [AGENTS.md](AGENTS.md).
+
+### Structure Summary
+
+```
+apps/           — Runnable entrypoints (Wails desktop, API gateway, microservices)
+frontend/       — Svelte UI (Vite + Tailwind)
+backend/        — All Go code
+  core/         — Pure business logic only
+  framework/    — Reusable infrastructure (DB, gRPC, messaging, logging, config)
+  modules/      — Domain-driven feature modules (market, ai, alerts, auth)
+  shared/       — Generic types, DTOs, enums, events
+services/       — Python AI services (FastAPI, LangChain)
+tools/          — Developer CLI (auractl.sh)
+configs/        — Environment configurations
+deployments/    — Docker, K8s, Terraform
+docs/           — Documentation
+```
+
+### Dependency Flow
+
+```
+apps  →  modules  →  core  →  framework  →  shared
+```
+
+No circular imports. All frameworks behind interfaces. Database, messaging, cache — all swappable.
+
+### Developer CLI
+
+```bash
+bash tools/auractl.sh
+```
+
+Provides a menu-driven interface for running, building, testing, and deploying the project.

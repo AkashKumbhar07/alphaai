@@ -1,0 +1,49 @@
+app:
+  name: "AuraMind AI"
+  env: "staging"
+  debug: false
+  port: 8080
+
+database:
+  postgres:
+    host: "staging-postgres"
+    port: 5432
+    user: "auramind"
+    password: "${POSTGRES_PASSWORD}"
+    database: "auramind"
+    sslmode: "require"
+
+  clickhouse:
+    host: "staging-clickhouse"
+    port: 9000
+    database: "auramind"
+
+  redis:
+    host: "staging-redis"
+    port: 6379
+
+grpc:
+  port: 50051
+  max_recv_msg_size: 4194304
+  max_send_msg_size: 4194304
+
+messaging:
+  provider: "nats"
+  nats:
+    url: "nats://staging-nats:4222"
+
+ai:
+  provider: "openai"
+  model: "gpt-4"
+  embedding_model: "text-embedding-3-small"
+  temperature: 0.7
+  max_tokens: 2048
+
+logging:
+  level: "info"
+  format: "json"
+
+monitoring:
+  prometheus:
+    enabled: true
+    port: 9090

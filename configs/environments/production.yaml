@@ -1,0 +1,49 @@
+app:
+  name: "AuraMind AI"
+  env: "production"
+  debug: false
+  port: 8080
+
+database:
+  postgres:
+    host: "${POSTGRES_HOST}"
+    port: 5432
+    user: "${POSTGRES_USER}"
+    password: "${POSTGRES_PASSWORD}"
+    database: "auramind"
+    sslmode: "require"
+
+  clickhouse:
+    host: "${CLICKHOUSE_HOST}"
+    port: 9000
+    database: "auramind"
+
+  redis:
+    host: "${REDIS_HOST}"
+    port: 6379
+
+grpc:
+  port: 50051
+  max_recv_msg_size: 8388608
+  max_send_msg_size: 8388608
+
+messaging:
+  provider: "nats"
+  nats:
+    url: "${NATS_URL}"
+
+ai:
+  provider: "openai"
+  model: "gpt-4"
+  embedding_model: "text-embedding-3-small"
+  temperature: 0.5
+  max_tokens: 4096
+
+logging:
+  level: "warn"
+  format: "json"
+
+monitoring:
+  prometheus:
+    enabled: true
+    port: 9090

@@ -1,0 +1,66 @@
+# AuraMind AI — Development Environment Configuration
+app:
+  name: "AuraMind AI"
+  env: "development"
+  debug: true
+  port: 8080
+
+database:
+  postgres:
+    host: "localhost"
+    port: 5432
+    user: "auramind"
+    password: "auramind_dev"
+    database: "auramind"
+    sslmode: "disable"
+
+  clickhouse:
+    host: "localhost"
+    port: 9000
+    database: "auramind"
+
+  redis:
+    host: "localhost"
+    port: 6379
+
+  sqlite:
+    path: "./data/auramind.db"
+
+grpc:
+  port: 50051
+  max_recv_msg_size: 4194304
+  max_send_msg_size: 4194304
+
+messaging:
+  provider: "nats"
+  nats:
+    url: "nats://localhost:4222"
+
+ai:
+  provider: "openai"
+  model: "gpt-4"
+  embedding_model: "text-embedding-3-small"
+  temperature: 0.7
+  max_tokens: 2048
+
+market:
+  exchanges:
+    - name: "binance"
+      ws_url: "wss://stream.binance.com:9443/ws"
+      rest_url: "https://api.binance.com"
+    - name: "bybit"
+      ws_url: "wss://stream.bybit.com/v5/public/linear"
+      rest_url: "https://api.bybit.com"
+
+logging:
+  level: "debug"
+  format: "console"
+
+monitoring:
+  prometheus:
+    enabled: true
+    port: 9090
+
+auth:
+  jwt_secret: "change-me-in-production"
+  jwt_expiry: "24h"

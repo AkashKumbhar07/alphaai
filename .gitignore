@@ -61,3 +61,23 @@ npm-debug.log*
 
 # Kubernetes
 kubeconfig
+
+# Build artifacts
+build/windows/
+build/mac/
+build/linux/
+
+# Wails
+apps/desktop/build/
+
+# Go workspace
+go.work
+
+# Python
+services/**/__pycache__/
+services/**/.venv/
+
+# Config overrides
+.env
+.env.*
+!configs/environments/
